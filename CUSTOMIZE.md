@@ -23,6 +23,7 @@ Here we will give you some tips on how to customize the website. One important t
     - [Key Integration Points](#key-integration-points)
   - [Modifying the CV information](#modifying-the-cv-information)
   - [Modifying the user and repository information](#modifying-the-user-and-repository-information)
+    - [Configuring external service URLs](#configuring-external-service-urls)
   - [Creating new pages](#creating-new-pages)
   - [Creating new blog posts](#creating-new-blog-posts)
   - [Creating new projects](#creating-new-projects)
@@ -213,7 +214,6 @@ Understanding al-folio's technology stack will help you better customize and ext
 ### Backend
 
 - **Jekyll 4.x**: [Jekyll](https://jekyllrb.com/) is a static site generator written in Ruby that transforms your Markdown files and templates into a static website. Jekyll is used to:
-
   - Convert Markdown files to HTML
   - Process Liquid templates
   - Manage collections (posts, projects, news, books, etc.)
@@ -221,7 +221,6 @@ Understanding al-folio's technology stack will help you better customize and ext
   - Minify CSS and JavaScript
 
 - **Ruby Gems** (Jekyll plugins): The project uses several Ruby plugins to extend Jekyll's functionality:
-
   - `jekyll-scholar`: Manages bibliography files (BibTeX) and generates publication pages with citations
   - `jekyll-archives-v2`: Creates archive pages for posts and collections organized by category, tag, or date
   - `jekyll-paginate-v2`: Handles pagination for blog posts and archives
@@ -239,7 +238,6 @@ Understanding al-folio's technology stack will help you better customize and ext
 ### Build and Deployment
 
 - **GitHub Actions**: Automated workflows for building, testing, and deploying your site. Workflows are defined in `.github/workflows/`:
-
   - **Deploy**: Automatically builds and deploys your site to GitHub Pages when you push changes to the main branch
   - **Link checking**: Validates that all links in your site are not broken
   - **Code formatting**: Ensures code follows the Prettier code style
@@ -271,6 +269,30 @@ What this means is, if there is no resume data defined in [\_config.yml](_config
 ## Modifying the user and repository information
 
 The user and repository information is defined in [\_data/repositories.yml](_data/repositories.yml). You can add as many users and repositories as you want. Both informations are used in the `repositories` section.
+
+### Configuring external service URLs
+
+The repository page uses external services to display GitHub statistics and trophies. By default, these are:
+
+- `github-readme-stats.vercel.app` for user stats and repository cards
+- `github-profile-trophy.vercel.app` for GitHub profile trophies
+
+**Important:** These default services are hosted by third parties and may not be available 100% of the time. For better reliability, privacy, and customization, you can self-host these services and configure your website to use your own instances.
+
+To use your own instances of these services, configure the URLs in [\_config.yml](_config.yml):
+
+```yaml
+external_services:
+  github_readme_stats_url: https://github-readme-stats.vercel.app
+  github_profile_trophy_url: https://github-profile-trophy.vercel.app
+```
+
+To self-host these services, follow the deployment instructions in their respective repositories:
+
+- [github-readme-stats](https://github.com/anuraghazra/github-readme-stats)
+- [github-profile-trophy](https://github.com/ryo-ma/github-profile-trophy)
+
+Once deployed, update the URLs above to point to your custom deployment.
 
 ## Creating new pages
 
@@ -306,7 +328,7 @@ To access the collections, you can use the `site.COLLECTION_NAME` variable in yo
 
 To add publications create a new entry in the [\_bibliography/papers.bib](_bibliography/papers.bib) file. You can find the BibTeX entry of a publication in Google Scholar by clicking on the quotation marks below the publication title, then clicking on "BibTeX", or also in the conference page itself. By default, the publications will be sorted by year and the most recent will be displayed first. You can change this behavior and more in the `Jekyll Scholar` section in [\_config.yml](_config.yml) file.
 
-You can add extra information to a publication, like a PDF file in the `assets/pdfs/` directory and add the path to the PDF file in the BibTeX entry with the `pdf` field. Some of the supported fields are: `abstract`, `altmetric`, `annotation`, `arxiv`, `bibtex_show`, `blog`, `code`, `dimensions`, `doi`, `eprint`, `html`, `isbn`, `pdf`, `pmid`, `poster`, `slides`, `supp`, `video`, and `website`.
+You can add extra information to a publication, like a PDF file in the `assets/pdfs/` directory and add the path to the PDF file in the BibTeX entry with the `pdf` field. Some of the supported fields are: `abstract`, `altmetric`, `annotation`, `arxiv`, `bibtex_show`, `blog`, `code`, `dimensions`, `doi`, `eprint`, `hal`, `html`, `isbn`, `pdf`, `pmid`, `poster`, `slides`, `supp`, `video`, and `website`.
 
 ### Author annotation
 
@@ -356,6 +378,7 @@ There are several custom bibtex keywords that you can use to affect how the entr
 - `blog`: Adds a "Blog" button redirecting to the specified link
 - `code`: Adds a "Code" button redirecting to the specified link
 - `dimensions`: Adds a [Dimensions](https://www.dimensions.ai/) badge (Note: if DOI or PMID is provided just use `true`, otherwise only add the Dimensions' identifier here - the link is generated automatically)
+- `hal`: Adds a link to the HAL website (Note: only add the hal identifier (hal-xxx or tel-xxx) here - the link is generated automatically)
 - `html`: Inserts an "HTML" button redirecting to the user-specified link
 - `pdf`: Adds a "PDF" button redirecting to a specified file (if a full link is not specified, the file will be assumed to be placed in the /assets/pdf/ directory)
 - `poster`: Adds a "Poster" button redirecting to a specified file (if a full link is not specified, the file will be assumed to be placed in the /assets/pdf/ directory)
@@ -467,7 +490,6 @@ To update a library:
 
 1. Change the `version` number
 2. Obtain the new integrity hash for the updated library version and update the `integrity` field with the new hash. You can:
-
    - Check if the CDN provider (e.g., jsDelivr, cdnjs, unpkg) provides the SRI hash for the file. Many CDN sites display the SRI hash alongside the file URL.
    - Generate the SRI hash yourself using a tool such as [SRI Hash Generator](https://www.srihash.org/) or by running the following command in your terminal:
 
@@ -477,7 +499,6 @@ To update a library:
 
      Replace `[FILE_URL]` with the URL of the library file. Then, prefix the result with `sha384-` and use it in the `integrity` field.
      For detailed instructions on updating specific libraries, see the FAQ:
-
      - [How can I update Academicons version](FAQ.md#how-can-i-update-academicons-version-on-the-template)
      - [How can I update Font Awesome version](FAQ.md#how-can-i-update-font-awesome-version-on-the-template)
      - [How can I update Tabler Icons version](FAQ.md#how-can-i-update-tabler-icons-version-on-the-template)
@@ -660,7 +681,6 @@ GitHub restricts the default `GITHUB_TOKEN` from triggering other workflows when
 ### How to set up the PAT
 
 1. **Create a Personal Access Token**
-
    - Go to [GitHub Settings > Developer settings > Personal access tokens](https://github.com/settings/tokens).
    - Click "Generate new token" (classic or fine-grained).
    - Grant at least the following permissions:
@@ -668,7 +688,6 @@ GitHub restricts the default `GITHUB_TOKEN` from triggering other workflows when
    - Save the token somewhere safe.
 
 2. **Add the PAT as a repository secret**
-
    - Go to your repository on GitHub.
    - Navigate to `Settings` > `Secrets and variables` > `Actions` > `New repository secret`.
    - Name the secret `PAT` (must match the name used in the workflow).
